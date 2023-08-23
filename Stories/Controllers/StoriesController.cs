@@ -21,23 +21,14 @@ namespace Stories.Controllers
         }
 
         [HttpGet()]
-        [Route("/stories", Name = "GetStores")]
-        public ValueTask<IEnumerable<int>> Get(CancellationToken cancellationToken)
-        {
-            this.logger.LogInformation("Handling request GetStores");
-
-            return this.storyClient.Fetch(1, cancellationToken);
-        }
-
-        [HttpGet()]
-        [Route("/details", Name = "GetStoresDetails")]
-        public async IAsyncEnumerable<Story> GetDetails([EnumeratorCancellation] CancellationToken cancellationToken)
+        [Route("/details/{numberOfStories}", Name = "GetStoresDetails")]
+        public async IAsyncEnumerable<Story> GetDetails(int numberOfStories, [EnumeratorCancellation] CancellationToken cancellationToken)
         {
             this.logger.LogInformation("Handling request GetStoresDetails");
 
-            var ids = await this.storyClient.Fetch(1, cancellationToken);
+            var ids = await this.storyClient.Fetch(numberOfStories, cancellationToken);
 
-            await foreach (var item in this.storyDetailsClient.GetDetails(ids.Take(10), cancellationToken))
+            await foreach (var item in this.storyDetailsClient.GetDetails(ids, cancellationToken))
             {
                 yield return item;
             }

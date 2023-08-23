@@ -12,6 +12,7 @@ namespace Stories.Services
     public class StoryDetailsApiClient : IStoryDetailsApiClient
     {
         private static SemaphoreSlim semaphor = new SemaphoreSlim(5, 5);
+        private readonly TimeSpan cacheExpiry = TimeSpan.FromMinutes(2);
         private readonly int maxRetries = 2;
         private readonly ILogger<StoryDetailsApiClient> logger;
         private readonly IMemoryCache cache;
@@ -67,9 +68,18 @@ namespace Stories.Services
 
         public async IAsyncEnumerable<Story> GetDetails(IEnumerable<int> itemIds, [EnumeratorCancellation]CancellationToken cancellationToken)
         {
-            var tasks = itemIds.Select(item => this.GetDetails(item, cancellationToken)).ToList();
+            var storiesFromCache = this.GetStoriesFromCache(itemIds).ToList();
 
-            int complete = 0, totalCount = tasks.Count();
+            foreach (var story in storiesFromCache)
+            {
+                yield return story;
+            }
+
+            var storiesToFetch = itemIds.Except(storiesFromCache.Select(item => item.Id)).ToList();
+
+            var tasks = storiesToFetch.Select(item => this.GetDetails(item, cancellationToken)).ToList();
+
+            int complete = 0, totalCount = storiesToFetch.Count;
 
             while (complete < totalCount)
             {
@@ -77,10 +87,30 @@ namespace Stories.Services
 
                 ++complete;
 
-                yield return await completeTask;
+                var story = await completeTask;
+
+                this.cache.Set(this.GetCacheKey(story.Id), story, cacheExpiry);
+                
+                yield return story;
 
                 tasks.Remove(completeTask);
             }
+        }
+
+        private IEnumerable<Story> GetStoriesFromCache(IEnumerable<int> itemIds)
+        {
+            foreach (var item in itemIds)
+            {
+                if (this.cache.TryGetValue<Story>(this.GetCacheKey(item), out var story))
+                {
+                    yield return story;
+                }
+            }
+        }
+
+        private string GetCacheKey(int itemId)
+        {
+            return $"story_{itemId}";
         }
     }
 }

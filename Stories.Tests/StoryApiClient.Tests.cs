@@ -54,7 +54,7 @@ namespace Stories.Tests
                 .RespondWithJson(ids);
 
             var client = this.serviceProvider.GetService<IStoryApiClient>();
-            var response = await client!.Fetch(1, CancellationToken.None);
+            var response = await client!.Fetch(3, CancellationToken.None);
 
             response.Should().HaveCount(3);
             _httpTest.ShouldHaveCalled(url);
@@ -71,7 +71,7 @@ namespace Stories.Tests
                 .RespondWithJson(ids);
 
             var client = this.serviceProvider.GetService<IStoryApiClient>();
-            var response = await client!.Fetch(1, CancellationToken.None);
+            var response = await client!.Fetch(3, CancellationToken.None);
 
             response.Should().HaveCount(3);
             _httpTest.ShouldHaveCalled(url).Times(2);
