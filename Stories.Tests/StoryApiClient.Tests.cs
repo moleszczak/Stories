@@ -6,6 +6,7 @@ using NSubstitute;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Logging.Abstractions;
 using FluentAssertions;
+using Microsoft.Extensions.Caching.Memory;
 
 namespace Stories.Tests
 {
@@ -27,9 +28,12 @@ namespace Stories.Tests
             var mockConfiguration = Substitute.For<IStoriesApiConfiguration>();
             mockConfiguration.Url.Returns(this.apiUrl);
 
-            services.TryAddSingleton((sp) => mockConfiguration);
+            services.TryAddSingleton(mockConfiguration);
             services.TryAddScoped<IStoryApiClient, StoryApiClient>();
             services.TryAddSingleton<WaitDurationProvider>((attempt) => TimeSpan.FromMilliseconds(1));
+
+            var mockMemoryCache = Substitute.For<IMemoryCache>();
+            services.TryAddSingleton(mockMemoryCache);
 
             this.serviceProvider = services.BuildServiceProvider();
         }

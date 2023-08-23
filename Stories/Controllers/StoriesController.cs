@@ -22,7 +22,7 @@ namespace Stories.Controllers
 
         [HttpGet()]
         [Route("/stories", Name = "GetStores")]
-        public Task<IEnumerable<int>> Get(CancellationToken cancellationToken)
+        public ValueTask<IEnumerable<int>> Get(CancellationToken cancellationToken)
         {
             this.logger.LogInformation("Handling request GetStores");
 

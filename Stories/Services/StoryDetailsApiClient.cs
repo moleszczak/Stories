@@ -5,6 +5,7 @@ using Flurl;
 using System.Runtime.CompilerServices;
 using Polly;
 using Polly.Retry;
+using Microsoft.Extensions.Caching.Memory;
 
 namespace Stories.Services
 {
@@ -13,12 +14,14 @@ namespace Stories.Services
         private static SemaphoreSlim semaphor = new SemaphoreSlim(5, 5);
         private readonly int maxRetries = 2;
         private readonly ILogger<StoryDetailsApiClient> logger;
+        private readonly IMemoryCache cache;
         private readonly IStoriesApiConfiguration storiesApiConfiguration;
         private readonly AsyncRetryPolicy policy;
 
-        public StoryDetailsApiClient(ILogger<StoryDetailsApiClient> logger, IStoriesApiConfiguration storiesApiConfiguration, WaitDurationProvider delayProvider)
+        public StoryDetailsApiClient(ILogger<StoryDetailsApiClient> logger, IMemoryCache cache, IStoriesApiConfiguration storiesApiConfiguration, WaitDurationProvider delayProvider)
         {
             this.logger = logger;
+            this.cache = cache;
             this.storiesApiConfiguration = storiesApiConfiguration;
             this.policy = Policy
                 .Handle<FlurlHttpException>()

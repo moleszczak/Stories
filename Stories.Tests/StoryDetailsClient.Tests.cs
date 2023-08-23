@@ -8,6 +8,7 @@ using Microsoft.Extensions.Logging.Abstractions;
 using FluentAssertions;
 using Stories.Model;
 using Flurl.Http;
+using Microsoft.Extensions.Caching.Memory;
 
 namespace Stories.Tests
 {
@@ -32,6 +33,9 @@ namespace Stories.Tests
 			services.TryAddSingleton((sp) => mockConfiguration);
 			services.TryAddScoped<IStoryDetailsApiClient, StoryDetailsApiClient>();
 			services.TryAddSingleton<WaitDurationProvider>((attempt) => TimeSpan.FromMilliseconds(1));
+
+			var mockMemoryCache = Substitute.For<IMemoryCache>();
+			services.TryAddSingleton(mockMemoryCache);
 
 			this.serviceProvider = services.BuildServiceProvider();
 		}
