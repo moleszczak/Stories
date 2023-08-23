@@ -22,7 +22,7 @@ namespace Stories.Controllers
 
         [HttpGet()]
         [Route("/details/{numberOfStories}", Name = "GetStoresDetails")]
-        public async IAsyncEnumerable<Story> GetDetails(int numberOfStories, [EnumeratorCancellation] CancellationToken cancellationToken)
+        public async IAsyncEnumerable<StoryDto> GetDetails(int numberOfStories, [EnumeratorCancellation] CancellationToken cancellationToken)
         {
             this.logger.LogInformation("Handling request GetStoresDetails");
 

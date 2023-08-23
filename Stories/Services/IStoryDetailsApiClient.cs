@@ -6,6 +6,6 @@ namespace Stories.Services
     {
         Task<Story> GetDetails(int itemId, CancellationToken cancellationToken);
 
-        IAsyncEnumerable<Story> GetDetails(IEnumerable<int> itemIds, CancellationToken cancellationToken);
+        IAsyncEnumerable<StoryDto> GetDetails(IEnumerable<int> itemIds, CancellationToken cancellationToken);
     }
 }

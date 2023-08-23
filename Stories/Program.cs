@@ -18,6 +18,7 @@ namespace Stories
             builder.Services.TryAddScoped<IStoriesApiConfiguration>(sb => sb.GetService<IOptions<StoriesApiConfiguration>>()!.Value);
             builder.Services.TryAddSingleton<WaitDurationProvider>((attempt) => TimeSpan.FromSeconds(Math.Pow(2, attempt)));
             builder.Services.AddMemoryCache();
+            builder.Services.AddAutoMapper(typeof(MappingConfiguration));
 
             builder.Services.AddControllers();
             builder.Services.AddEndpointsApiExplorer();

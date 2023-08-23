@@ -49,7 +49,7 @@ namespace Stories.Services
                 return cacheValue.Take(numberOfBestStories);
             }
 
-            IFlurlClient client = new FlurlClient();
+            using IFlurlClient client = new FlurlClient();
 
             var request = this.configuratgion.Url.AppendPathSegment(bestStoriesUrl).WithClient(client);
 

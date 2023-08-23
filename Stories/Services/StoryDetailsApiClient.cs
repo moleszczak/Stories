@@ -6,6 +6,7 @@ using System.Runtime.CompilerServices;
 using Polly;
 using Polly.Retry;
 using Microsoft.Extensions.Caching.Memory;
+using AutoMapper;
 
 namespace Stories.Services
 {
@@ -16,13 +17,15 @@ namespace Stories.Services
         private readonly int maxRetries = 2;
         private readonly ILogger<StoryDetailsApiClient> logger;
         private readonly IMemoryCache cache;
+        private readonly IMapper mapper;
         private readonly IStoriesApiConfiguration storiesApiConfiguration;
         private readonly AsyncRetryPolicy policy;
 
-        public StoryDetailsApiClient(ILogger<StoryDetailsApiClient> logger, IMemoryCache cache, IStoriesApiConfiguration storiesApiConfiguration, WaitDurationProvider delayProvider)
+        public StoryDetailsApiClient(ILogger<StoryDetailsApiClient> logger, IMemoryCache cache, IMapper mapper, IStoriesApiConfiguration storiesApiConfiguration, WaitDurationProvider delayProvider)
         {
             this.logger = logger;
             this.cache = cache;
+            this.mapper = mapper;
             this.storiesApiConfiguration = storiesApiConfiguration;
             this.policy = Policy
                 .Handle<FlurlHttpException>()
@@ -46,7 +49,7 @@ namespace Stories.Services
 
                 this.logger.LogInformation("Getting details of story {itemId}, sending request.", itemId);
 
-                IFlurlClient client = new FlurlClient();
+                using IFlurlClient client = new FlurlClient();
 
                 var request = this.storiesApiConfiguration.Url.AppendPathSegment($"item/{itemId}.json").WithClient(client);
 
@@ -66,13 +69,13 @@ namespace Stories.Services
             }
         }
 
-        public async IAsyncEnumerable<Story> GetDetails(IEnumerable<int> itemIds, [EnumeratorCancellation]CancellationToken cancellationToken)
+        public async IAsyncEnumerable<StoryDto> GetDetails(IEnumerable<int> itemIds, [EnumeratorCancellation] CancellationToken cancellationToken)
         {
             var storiesFromCache = this.GetStoriesFromCache(itemIds).ToList();
 
             foreach (var story in storiesFromCache)
             {
-                yield return story;
+                yield return this.mapper.Map<StoryDto>(story);
             }
 
             var storiesToFetch = itemIds.Except(storiesFromCache.Select(item => item.Id)).ToList();
@@ -90,8 +93,8 @@ namespace Stories.Services
                 var story = await completeTask;
 
                 this.cache.Set(this.GetCacheKey(story.Id), story, cacheExpiry);
-                
-                yield return story;
+
+                yield return this.mapper.Map<StoryDto>(story);
 
                 tasks.Remove(completeTask);
             }
