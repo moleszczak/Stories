@@ -14,15 +14,15 @@ namespace Stories.Services
         private readonly ILogger<StoryApiClient> logger;
         private readonly IStoriesApiConfiguration configuratgion;
         private readonly AsyncRetryPolicy policy;
-        private readonly int maxRetries = 3;
+        private readonly int maxRetries = 2;
 
-        public StoryApiClient(ILogger<StoryApiClient> logger, IStoriesApiConfiguration configuration)
+        public StoryApiClient(ILogger<StoryApiClient> logger, IStoriesApiConfiguration configuration, WaitDurationProvider delayProvider)
         {
             this.logger = logger;
             this.configuratgion = configuration;
             this.policy = Policy
                 .Handle<FlurlHttpException>()
-                .WaitAndRetryAsync(maxRetries, i => TimeSpan.FromSeconds(Math.Pow(2, i)), (e, s, p, x) =>
+                .WaitAndRetryAsync(maxRetries, i => delayProvider(i), (e, s, p, x) =>
                 {
                     this.logger.LogWarning("Failed to fetch details of story.");
                     if (p < maxRetries)

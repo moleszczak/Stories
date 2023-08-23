@@ -2,21 +2,34 @@
 using Flurl.Http;
 using Stories.Configuration;
 using Flurl;
-using Microsoft.AspNetCore.Mvc;
 using System.Runtime.CompilerServices;
+using Polly;
+using Polly.Retry;
 
 namespace Stories.Services
 {
     public class StoryDetailsApiClient : IStoryDetailsApiClient
     {
         private static SemaphoreSlim semaphor = new SemaphoreSlim(5, 5);
+        private readonly int maxRetries = 2;
         private readonly ILogger<StoryDetailsApiClient> logger;
         private readonly IStoriesApiConfiguration storiesApiConfiguration;
+        private readonly AsyncRetryPolicy policy;
 
-        public StoryDetailsApiClient(ILogger<StoryDetailsApiClient> logger, IStoriesApiConfiguration storiesApiConfiguration)
+        public StoryDetailsApiClient(ILogger<StoryDetailsApiClient> logger, IStoriesApiConfiguration storiesApiConfiguration, WaitDurationProvider delayProvider)
         {
             this.logger = logger;
             this.storiesApiConfiguration = storiesApiConfiguration;
+            this.policy = Policy
+                .Handle<FlurlHttpException>()
+                .WaitAndRetryAsync(maxRetries, i => delayProvider(i), (e, s, p, x) =>
+                {
+                    this.logger.LogWarning("Failed to fetch details of story.");
+                    if (p < maxRetries)
+                    {
+                        this.logger.LogInformation("Next retry {0} in {1}", p, s.TotalSeconds);
+                    }
+                });
         }
 
         public async Task<Story> GetDetails(int itemId, CancellationToken cancellationToken)
@@ -33,7 +46,7 @@ namespace Stories.Services
 
                 var request = this.storiesApiConfiguration.Url.AppendPathSegment($"item/{itemId}.json").WithClient(client);
 
-                return await request.GetJsonAsync<Story>(cancellationToken);
+                return await this.policy.ExecuteAsync(() => request.GetJsonAsync<Story>(cancellationToken));
             }
             catch (Exception ex)
             {

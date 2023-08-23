@@ -14,9 +14,9 @@ namespace Stories
             // Add services to the container.
             builder.Services.TryAddScoped<IStoryApiClient, StoryApiClient>();
             builder.Services.TryAddScoped<IStoryDetailsApiClient, StoryDetailsApiClient>();
-            builder.Services.TryAddScoped<ISleepDurationProvderFactory, SleepDurationProvderFactory>();
             builder.Services.Configure<StoriesApiConfiguration>(builder.Configuration.GetSection(StoriesApiConfiguration.SectionName));
             builder.Services.TryAddScoped<IStoriesApiConfiguration>(sb => sb.GetService<IOptions<StoriesApiConfiguration>>()!.Value);
+            builder.Services.TryAddSingleton<WaitDurationProvider>((attempt) => TimeSpan.FromSeconds(Math.Pow(2, attempt)));
 
             builder.Services.AddControllers();
             builder.Services.AddEndpointsApiExplorer();

@@ -29,6 +29,7 @@ namespace Stories.Tests
 
             services.TryAddSingleton((sp) => mockConfiguration);
             services.TryAddScoped<IStoryApiClient, StoryApiClient>();
+            services.TryAddSingleton<WaitDurationProvider>((attempt) => TimeSpan.FromMilliseconds(1));
 
             this.serviceProvider = services.BuildServiceProvider();
         }
