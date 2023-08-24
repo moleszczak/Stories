@@ -34,7 +34,9 @@ namespace Stories.Tests
 			services.TryAddScoped<IStoryDetailsApiClient, StoryDetailsApiClient>();
 			services.TryAddSingleton<WaitDurationProvider>((attempt) => TimeSpan.FromMilliseconds(1));
 
-			var mockMemoryCache = Substitute.For<IMemoryCache>();
+            services.AddAutoMapper(typeof(MappingConfiguration));
+
+            var mockMemoryCache = Substitute.For<IMemoryCache>();
 			services.TryAddSingleton(mockMemoryCache);
 
 			this.serviceProvider = services.BuildServiceProvider();

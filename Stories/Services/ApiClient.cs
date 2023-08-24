@@ -1,26 +1,21 @@
 ﻿using Flurl.Http;
-using Microsoft.Extensions.Caching.Memory;
 using Polly;
 using Polly.Retry;
 
 namespace Stories.Services
 {
-    public class ApiClient<T>
+    public class ApiClient<T> : IApiClient<T>
         where T : class, new()
     {
         private static SemaphoreSlim semaphor = new SemaphoreSlim(5, 5);
 
         private readonly ILogger<ApiClient<T>> logger;
-        private readonly IMemoryCache cache;
         private readonly AsyncRetryPolicy policy;
         private readonly int maxRetries = 2;
-        private readonly CacheExpirationProvider cacheExpirationProvider;
 
-        public ApiClient(ILogger<ApiClient<T>> logger, IMemoryCache cache, WaitDurationProvider delayProvider, CacheExpirationProvider cacheExpirationProvider)
+        public ApiClient(ILogger<ApiClient<T>> logger, WaitDurationProvider delayProvider)
         {
             this.logger = logger;
-            this.cache = cache;
-            this.cacheExpirationProvider = cacheExpirationProvider;
             this.policy = Policy
                 .Handle<FlurlHttpException>()
                 .WaitAndRetryAsync(maxRetries, i => delayProvider(i), (e, s, p, x) =>
@@ -64,28 +59,6 @@ namespace Stories.Services
             {
                 semaphor.Release();
             }
-        }
-
-        public async ValueTask<T> FetchDataThroughCache(string url, CancellationToken cancellationToken)
-        {
-            if (this.cache.TryGetValue<T>(url, out var item))
-            {
-                return item;
-            }
-            else
-            {
-                item = await this.FetchData(url, cancellationToken);
-
-                this.PutToCache(url, item);
-
-                return item;
-            }
-        }
-
-
-        protected void PutToCache(string cacheKey, T item)
-        {
-            this.cache.Set(cacheKey, item, cacheExpirationProvider());
-        }        
+        }      
     }
 }

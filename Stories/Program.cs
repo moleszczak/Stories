@@ -17,8 +17,12 @@ namespace Stories
             builder.Services.Configure<StoriesApiConfiguration>(builder.Configuration.GetSection(StoriesApiConfiguration.SectionName));
             builder.Services.TryAddScoped<IStoriesApiConfiguration>(sb => sb.GetService<IOptions<StoriesApiConfiguration>>()!.Value);
             builder.Services.TryAddSingleton<WaitDurationProvider>((attempt) => TimeSpan.FromSeconds(Math.Pow(2, attempt)));
+            builder.Services.TryAddSingleton<CacheExpirationProvider>(() => TimeSpan.FromSeconds(120));
             builder.Services.AddMemoryCache();
             builder.Services.AddAutoMapper(typeof(MappingConfiguration));
+
+            builder.Services.TryAddScoped(typeof(IApiClient<>), typeof(ApiClient<>));
+            builder.Services.TryDecorate(typeof(IApiClient<>), typeof(ApiClientWithCache<>));
 
             builder.Services.AddControllers();
             builder.Services.AddEndpointsApiExplorer();
