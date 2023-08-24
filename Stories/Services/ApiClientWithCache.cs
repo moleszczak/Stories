@@ -3,7 +3,7 @@
 namespace Stories.Services
 {
     public class ApiClientWithCache<T> : IApiClient<T>
-        where T : class, new()
+        where T : class
     {
         private readonly IApiClient<T> apiClient;
         private ILogger<ApiClientWithCache<T>> logger;

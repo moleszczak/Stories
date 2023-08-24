@@ -31,6 +31,10 @@ namespace Stories.Tests
             services.TryAddSingleton(mockConfiguration);
             services.TryAddScoped<IStoryApiClient, StoryApiClient>();
             services.TryAddSingleton<WaitDurationProvider>((attempt) => TimeSpan.FromMilliseconds(1));
+            services.TryAddSingleton<CacheExpirationProvider>(() => TimeSpan.FromSeconds(10));
+
+            services.TryAddScoped(typeof(IApiClient<IEnumerable<int>>), typeof(ApiClient<IEnumerable<int>>));
+            services.TryDecorate(typeof(IApiClient<IEnumerable<int>>), typeof(ApiClientWithCache<IEnumerable<int>>));
 
             var mockMemoryCache = Substitute.For<IMemoryCache>();
             services.TryAddSingleton(mockMemoryCache);

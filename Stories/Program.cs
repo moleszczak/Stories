@@ -21,8 +21,8 @@ namespace Stories
             builder.Services.AddMemoryCache();
             builder.Services.AddAutoMapper(typeof(MappingConfiguration));
 
-            builder.Services.TryAddScoped(typeof(IApiClient<>), typeof(ApiClient<>));
-            builder.Services.TryDecorate(typeof(IApiClient<>), typeof(ApiClientWithCache<>));
+            builder.Services.TryAddScoped(typeof(IApiClient<IEnumerable<int>>), typeof(ApiClient<IEnumerable<int>>));
+            builder.Services.TryDecorate(typeof(IApiClient<IEnumerable<int>>), typeof(ApiClientWithCache<IEnumerable<int>>));
 
             builder.Services.AddControllers();
             builder.Services.AddEndpointsApiExplorer();

@@ -5,7 +5,7 @@ using Polly.Retry;
 namespace Stories.Services
 {
     public class ApiClient<T> : IApiClient<T>
-        where T : class, new()
+        where T : class
     {
         private static SemaphoreSlim semaphor = new SemaphoreSlim(5, 5);
 
