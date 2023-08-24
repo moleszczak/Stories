@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Mvc;
 using Stories.Model;
 using Stories.Services;
+using System.Net;
 using System.Runtime.CompilerServices;
 
 namespace Stories.Controllers
@@ -22,16 +23,21 @@ namespace Stories.Controllers
 
         [HttpGet()]
         [Route("/details/{numberOfStories}", Name = "GetStoresDetails")]
-        public async IAsyncEnumerable<StoryDto> GetDetails(int numberOfStories, [EnumeratorCancellation] CancellationToken cancellationToken)
+        [ProducesResponseType(typeof(IAsyncEnumerable<StoryDto>), StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        public async Task<IActionResult> GetDetails(int numberOfStories, CancellationToken cancellationToken)
         {
             this.logger.LogInformation("Handling request GetStoresDetails");
 
+            if (numberOfStories < 1 || numberOfStories > 200)
+            {
+                this.logger.LogInformation("Invalid number of requested stories.");
+                return BadRequest("Number of stories must be in range 1 .. 200.");
+            }
+
             var ids = await this.storyClient.Fetch(numberOfStories, cancellationToken);
 
-            await foreach (var item in this.storyDetailsClient.GetDetails(ids, cancellationToken))
-            {
-                yield return item;
-            }
+            return Ok(this.storyDetailsClient.GetDetails(ids, cancellationToken));
         }
     }
 }

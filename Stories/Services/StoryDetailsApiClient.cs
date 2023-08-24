@@ -53,7 +53,17 @@ namespace Stories.Services
 
                 var request = this.storiesApiConfiguration.Url.AppendPathSegment($"item/{itemId}.json").WithClient(client);
 
-                return await this.policy.ExecuteAsync(() => request.GetJsonAsync<Story>(cancellationToken));
+                var story = await this.policy.ExecuteAsync(() => request.GetJsonAsync<Story>(cancellationToken));
+
+                this.logger.LogInformation("Getting details of story {itemId}: COMPLETE.", itemId);
+
+                return story;
+            }
+            catch (FlurlHttpException ex)
+            {
+                this.logger.LogError("Stories api responded with {0}. {1}", ex.StatusCode, ex.Message);
+
+                throw;
             }
             catch (Exception ex)
             {
@@ -63,8 +73,6 @@ namespace Stories.Services
             }
             finally
             {
-                this.logger.LogInformation("Getting details of story {itemId}: COMPLETE.", itemId);
-
                 semaphor.Release();
             }
         }
