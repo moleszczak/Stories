@@ -1,6 +1,7 @@
 using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.Extensions.Options;
 using Stories.Configuration;
+using Stories.Model;
 using Stories.Services;
 
 namespace Stories
@@ -22,7 +23,8 @@ namespace Stories
             builder.Services.AddAutoMapper(typeof(MappingConfiguration));
 
             builder.Services.TryAddScoped(typeof(IApiClient<IEnumerable<int>>), typeof(ApiClient<IEnumerable<int>>));
-            builder.Services.TryDecorate(typeof(IApiClient<IEnumerable<int>>), typeof(ApiClientWithCache<IEnumerable<int>>));
+            builder.Services.TryAddScoped(typeof(IApiClient<Story>), typeof(ApiClient<Story>));
+            builder.Services.TryDecorate(typeof(IApiClient<>), typeof(ApiClientWithCache<>));
 
             builder.Services.AddControllers();
             builder.Services.AddEndpointsApiExplorer();

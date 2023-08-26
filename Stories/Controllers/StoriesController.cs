@@ -1,8 +1,6 @@
 using Microsoft.AspNetCore.Mvc;
 using Stories.Model;
 using Stories.Services;
-using System.Net;
-using System.Runtime.CompilerServices;
 
 namespace Stories.Controllers
 {

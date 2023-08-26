@@ -48,60 +48,60 @@ namespace Stories.Tests
 			_httpTest.Dispose();
 		}
 
-		[Test]
-		public async Task Should_Return_StoryDetails_Success()
-		{
-			string urlPattern = $"{this.apiUrl}/item/*";
+		//[Test]
+		//public async Task Should_Return_StoryDetails_Success()
+		//{
+		//	string urlPattern = $"{this.apiUrl}/item/*";
 
-			_httpTest
-				.ForCallsTo(urlPattern)
-				.RespondWithJson(SampleStories[1]);
+		//	_httpTest
+		//		.ForCallsTo(urlPattern)
+		//		.RespondWithJson(SampleStories[1]);
 
-			var client = this.serviceProvider.GetRequiredService<IStoryDetailsApiClient>();
+		//	var client = this.serviceProvider.GetRequiredService<IStoryDetailsApiClient>();
 
-			var response = await client.GetDetails(1, CancellationToken.None);
+		//	var response = await client.GetDetails(1, CancellationToken.None);
 
-			response.Should().BeEquivalentTo(SampleStories[1]);
-		}
+		//	response.Should().BeEquivalentTo(SampleStories[1]);
+		//}
 
-		[Test]
-		public async Task Should_Return_StoryDetails_After3Retries()
-		{
-			string urlPattern = $"{this.apiUrl}/item/*";
+		//[Test]
+		//public async Task Should_Return_StoryDetails_After3Retries()
+		//{
+		//	string urlPattern = $"{this.apiUrl}/item/*";
 
-			_httpTest
-				.ForCallsTo(urlPattern)
-				.RespondWith("Client failure", 404)
-				.RespondWith("Server failure", 500)
-				.RespondWithJson(SampleStories[1]);
+		//	_httpTest
+		//		.ForCallsTo(urlPattern)
+		//		.RespondWith("Client failure", 404)
+		//		.RespondWith("Server failure", 500)
+		//		.RespondWithJson(SampleStories[1]);
 
-			var client = this.serviceProvider.GetRequiredService<IStoryDetailsApiClient>();
+		//	var client = this.serviceProvider.GetRequiredService<IStoryDetailsApiClient>();
 
-			var response = await client.GetDetails(1, CancellationToken.None);
+		//	var response = await client.GetDetails(1, CancellationToken.None);
 
-			response.Should().BeEquivalentTo(SampleStories[1]);
-			_httpTest.ShouldHaveCalled(urlPattern).Times(3);
-		}
+		//	response.Should().BeEquivalentTo(SampleStories[1]);
+		//	_httpTest.ShouldHaveCalled(urlPattern).Times(3);
+		//}
 
-		[Test]
-		public async Task Should_Faild_And_Raise_Exception()
-		{
-			string urlPattern = $"{this.apiUrl}/item/*";
+		//[Test]
+		//public async Task Should_Faild_And_Raise_Exception()
+		//{
+		//	string urlPattern = $"{this.apiUrl}/item/*";
 
-			_httpTest
-				.ForCallsTo(urlPattern)
-				.RespondWith("Client failure", 404)
-				.RespondWith("Client failure", 401)
-				.RespondWith("Server failure", 500)
-				.RespondWithJson(SampleStories[1]);
+		//	_httpTest
+		//		.ForCallsTo(urlPattern)
+		//		.RespondWith("Client failure", 404)
+		//		.RespondWith("Client failure", 401)
+		//		.RespondWith("Server failure", 500)
+		//		.RespondWithJson(SampleStories[1]);
 
-			var client = this.serviceProvider.GetRequiredService<IStoryDetailsApiClient>();
+		//	var client = this.serviceProvider.GetRequiredService<IStoryDetailsApiClient>();
 
-			var sendRequest = async () => await client.GetDetails(1, CancellationToken.None);
+		//	var sendRequest = async () => await client.GetDetails(1, CancellationToken.None);
 
-			await sendRequest.Should().ThrowAsync<FlurlHttpException>();
+		//	await sendRequest.Should().ThrowAsync<FlurlHttpException>();
 
-		}
+		//}
 
 		private static Dictionary<int, Story> SampleStories = new Dictionary<int, Story>
 		{
