@@ -98,6 +98,7 @@ namespace Stories.Tests
                     Id = 1,
                     Title = "story 1",
                     By = "XXX",
+                    Time =  1693420852,
                     Type = "story",
                 }
             },
@@ -108,6 +109,7 @@ namespace Stories.Tests
                     Id = 2,
                     Title = "story 2",
                     By = "YYY",
+                    Time = 1693340274,
                     Type = "story",
                     Kids = new[] { 10001, 10002, 10003 },
                 }
@@ -121,9 +123,9 @@ namespace Stories.Tests
                 new StoryDto()
                 {
                     Title = "story 1",
-                    By = "XXX",
-                    Type = "story",
+                    PostedBy = "XXX",
                     CommentsCount = 0,
+                    Time = new DateTime(2023,8,30,20,40,52,DateTimeKind.Local),
                 }
             },
             {
@@ -131,9 +133,9 @@ namespace Stories.Tests
                 new StoryDto()
                 {
                     Title = "story 2",
-                    By = "YYY",
-                    Type = "story",
+                    PostedBy = "YYY",
                     CommentsCount = 3,
+                    Time = new DateTime(2023, 8, 29, 22, 17, 54, DateTimeKind.Local)
                 }
             },
         };
