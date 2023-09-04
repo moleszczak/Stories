@@ -18,11 +18,11 @@ namespace Stories.Services
             this.storiesClient = storiesClient;
         }
 
-        public async ValueTask<IEnumerable<int>> Fetch(int numberOfBestStories, CancellationToken cancellationToken)
+        public async ValueTask<IEnumerable<int>> FetchStories(int numberOfBestStories, CancellationToken cancellationToken)
         {
             this.logger.LogInformation("Getting list of best stories.");
 
-            var result = await this.storiesClient.FetchData(this.ConstructUrl(), cancellationToken);
+            var result = await this.storiesClient.FetchBestStoriesIds(this.ConstructUrl(), cancellationToken);
 
             this.logger.LogInformation("Getting list of best stories [SUCCESS].");
 

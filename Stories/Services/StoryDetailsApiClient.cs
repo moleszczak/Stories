@@ -22,11 +22,11 @@ namespace Stories.Services
             this.configuration = configuration ?? throw new ArgumentNullException(nameof(configuration));
         }
 
-        public async IAsyncEnumerable<StoryDto> GetDetails(IEnumerable<int> itemIds, [EnumeratorCancellation] CancellationToken cancellationToken)
+        public async IAsyncEnumerable<StoryDto> GetStoriesDetails(IEnumerable<int> itemIds, [EnumeratorCancellation] CancellationToken cancellationToken)
         {
             this.logger.LogInformation("Start fetching stories details.");
 
-            var tasks = itemIds.Select(item => this.storyApiClient.FetchData(this.ConstructUrl(item), cancellationToken)).ToList();
+            var tasks = itemIds.Select(item => this.storyApiClient.FetchBestStoriesIds(this.ConstructUrl(item), cancellationToken)).ToList();
 
             int complete = 0, totalCount = tasks.Count;
 

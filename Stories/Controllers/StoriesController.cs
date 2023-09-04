@@ -20,7 +20,7 @@ namespace Stories.Controllers
         }
 
         [HttpGet()]
-        [Route("/details/{numberOfStories}", Name = "GetStoresDetails")]
+        [Route("{numberOfStories}", Name = "GetStoresDetails")]
         [ProducesResponseType(typeof(IAsyncEnumerable<StoryDto>), StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public async Task<IActionResult> GetDetails(int numberOfStories, CancellationToken cancellationToken)
@@ -33,9 +33,9 @@ namespace Stories.Controllers
                 return BadRequest("Number of stories must be in range 1 .. 200.");
             }
 
-            var ids = await this.storyClient.Fetch(numberOfStories, cancellationToken);
+            var ids = await this.storyClient.FetchStories(numberOfStories, cancellationToken);
 
-            return Ok(this.storyDetailsClient.GetDetails(ids, cancellationToken));
+            return Ok(this.storyDetailsClient.GetStoriesDetails(ids, cancellationToken));
         }
     }
 }

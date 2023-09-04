@@ -2,6 +2,6 @@
 {
     public interface IStoryApiClient
     {
-        ValueTask<IEnumerable<int>> Fetch(int numberOfBestStories, CancellationToken cancellationToken);
+        ValueTask<IEnumerable<int>> FetchStories(int numberOfBestStories, CancellationToken cancellationToken);
     }
 }

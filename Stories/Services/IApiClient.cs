@@ -2,6 +2,6 @@
 {
     public interface IApiClient<T> where T : class
     {
-        Task<T> FetchData(string url, CancellationToken cancellationToken);
+        Task<T> FetchBestStoriesIds(string url, CancellationToken cancellationToken);
     }
 }

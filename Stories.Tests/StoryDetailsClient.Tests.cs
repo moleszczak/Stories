@@ -62,7 +62,7 @@ namespace Stories.Tests
 
             var client = this.serviceProvider.GetRequiredService<IStoryDetailsApiClient>();
 
-            var response = await client.GetDetails(new[] { 1 }, CancellationToken.None).ToListAsync();
+            var response = await client.GetStoriesDetails(new[] { 1 }, CancellationToken.None).ToListAsync();
 
             response.Should().BeEquivalentTo(new[] { SampleStoriesDto[1] });
         }
@@ -81,7 +81,7 @@ namespace Stories.Tests
 
             var client = this.serviceProvider.GetRequiredService<IStoryDetailsApiClient>();
 
-            var response = await client.GetDetails(new[] { 1, 2 }, CancellationToken.None).ToListAsync();
+            var response = await client.GetStoriesDetails(new[] { 1, 2 }, CancellationToken.None).ToListAsync();
 
             response.Should().BeEquivalentTo(SampleStoriesDto.Values);
 

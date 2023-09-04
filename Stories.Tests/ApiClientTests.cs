@@ -58,7 +58,7 @@ namespace Stories.Tests
             httpTest.ForCallsTo(this.apiUrl).RespondWithJson(dummy, 200);
             var client = this.serviceProvider.GetService<IApiClient<object>>();
 
-            var result = await client!.FetchData(this.apiUrl, CancellationToken.None);
+            var result = await client!.FetchBestStoriesIds(this.apiUrl, CancellationToken.None);
 
             result.Should().BeEquivalentTo(dummy);
             httpTest.ShouldHaveCalled(this.apiUrl);
@@ -74,7 +74,7 @@ namespace Stories.Tests
                 .RespondWithJson(dummy, 200);
             var client = this.serviceProvider.GetService<IApiClient<object>>();
 
-            var result = await client!.FetchData(this.apiUrl, CancellationToken.None);
+            var result = await client!.FetchBestStoriesIds(this.apiUrl, CancellationToken.None);
 
             result.Should().BeEquivalentTo(dummy);
             httpTest.ShouldHaveCalled(this.apiUrl).Times(2);
@@ -92,7 +92,7 @@ namespace Stories.Tests
                 .RespondWithJson(dummy, 200);
             var client = this.serviceProvider.GetService<IApiClient<object>>();
 
-            var sendingRequest = async () => await client!.FetchData(this.apiUrl, CancellationToken.None);
+            var sendingRequest = async () => await client!.FetchBestStoriesIds(this.apiUrl, CancellationToken.None);
 
             await sendingRequest.Should().ThrowAsync<FlurlHttpException>();
             httpTest.ShouldHaveCalled(this.apiUrl).Times(3);

@@ -4,6 +4,6 @@ namespace Stories.Services
 {
     public interface IStoryDetailsApiClient
     {
-        IAsyncEnumerable<StoryDto> GetDetails(IEnumerable<int> itemIds, CancellationToken cancellationToken);
+        IAsyncEnumerable<StoryDto> GetStoriesDetails(IEnumerable<int> itemIds, CancellationToken cancellationToken);
     }
 }
