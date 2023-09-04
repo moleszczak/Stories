@@ -12,7 +12,7 @@ Go to local folder where code is cloned and execute commands below.
 
 ```dotnet run --project Stories```
 
-Service shuld start and start responding to request.
+Service should start and respond to requests.
 
 ## Usage
 
@@ -23,6 +23,5 @@ Number must be selected in range 1 to 200.
 
 ## Roadmap
 
-Authentication to allow only authenticated users access service.
-Better error handling
- - dedicated handler for timeouts or too many requests response from https://hacker-news.firebaseio.com/v0/
+- Authentication to allow only authenticated users access service.
+- Dedicated handler for timeouts or too many requests response from https://hacker-news.firebaseio.com/v0/
