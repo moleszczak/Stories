@@ -70,7 +70,7 @@ namespace Stories.Tests
         [Test]
         public async Task Should_Return_StoryDetails_After3Retries()
         {
-            string urlPattern = $"{this.apiUrl}/item/*";
+            string urlPattern = $"{this.apiUrl}/items/*";
 
             _httpTest
                 .ForCallsTo(urlPattern)

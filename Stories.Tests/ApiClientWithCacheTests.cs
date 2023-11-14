@@ -61,7 +61,7 @@ namespace Stories.Tests
 
             var client = this.serviceProvider.GetService<IApiClient<object>>();
 
-            var result = await client!.FetchBestStoriesIds(this.apiUrl, CancellationToken.None);
+            var result = await client!.Get(this.apiUrl, CancellationToken.None);
 
             result.Should().BeEquivalentTo(dummy);
 
@@ -82,7 +82,7 @@ namespace Stories.Tests
 
             var client = this.serviceProvider.GetService<IApiClient<object>>();
 
-            var result = await client!.FetchBestStoriesIds(this.apiUrl, CancellationToken.None);
+            var result = await client!.Get(this.apiUrl, CancellationToken.None);
 
             result.Should().BeEquivalentTo(dummy);
 

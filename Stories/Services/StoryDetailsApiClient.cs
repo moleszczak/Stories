@@ -26,7 +26,7 @@ namespace Stories.Services
         {
             this.logger.LogInformation("Start fetching stories details.");
 
-            var tasks = itemIds.Select(item => this.storyApiClient.FetchBestStoriesIds(this.ConstructUrl(item), cancellationToken)).ToList();
+            var tasks = itemIds.Select(item => this.storyApiClient.Get(this.ConstructUrl(item), cancellationToken)).ToList();
 
             int complete = 0, totalCount = tasks.Count;
 

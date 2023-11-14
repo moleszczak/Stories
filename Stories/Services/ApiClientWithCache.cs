@@ -18,7 +18,7 @@ namespace Stories.Services
             this.cacheExpirationProvider = cacheExpirationProvider;
         }
 
-        public async Task<T> FetchBestStoriesIds(string url, CancellationToken cancellationToken)
+        public async Task<T> Get(string url, CancellationToken cancellationToken)
         {
             if (this.cache.TryGetValue<T>(url, out var item))
             {
@@ -27,7 +27,7 @@ namespace Stories.Services
             }
             else
             {
-                item = await this.apiClient.FetchBestStoriesIds(url, cancellationToken);
+                item = await this.apiClient.Get(url, cancellationToken);
 
                 this.PutToCache(url, item);
 

@@ -28,7 +28,7 @@ namespace Stories.Services
                 });
         }
 
-        public async Task<T> FetchBestStoriesIds(string url, CancellationToken cancellationToken)
+        public async Task<T> Get(string url, CancellationToken cancellationToken)
         {
             this.logger.LogDebug("Preparing request {url}", url);
 

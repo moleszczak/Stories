@@ -22,7 +22,7 @@ namespace Stories.Services
         {
             this.logger.LogInformation("Getting list of best stories.");
 
-            var result = await this.storiesClient.FetchBestStoriesIds(this.ConstructUrl(), cancellationToken);
+            var result = await this.storiesClient.Get(this.ConstructUrl(), cancellationToken);
 
             this.logger.LogInformation("Getting list of best stories [SUCCESS].");
 
