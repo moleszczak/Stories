@@ -86,10 +86,6 @@ namespace Stories.Tests
             var dummy = "Dummy Object";
             httpTest
                 .ForCallsTo(this.apiUrl)
-                .WithQueryParam("xxx",  "s")
-                //.WithAnyQueryParam("aaa", "zzz")
-                //.WithQueryParams("xxx", "yyy")
-
                 .RespondWithJson(dummy, 200);
 
             var client = this.serviceProvider.GetService<IApiClient<object>>();
@@ -101,19 +97,5 @@ namespace Stories.Tests
             httpTest.ShouldHaveCalled(this.apiUrl).Times(1);
         }
 
-        [Test]
-        public async Task Request_Should_Fail_S()
-        {
-            var dummy = "Dummy Object";
-            httpTest
-                .ForCallsTo(this.apiUrl)
-                .RespondWithJson(dummy, 200);
-            var client = this.serviceProvider.GetService<IApiClient<object>>();
-
-            var sendingRequest = async () => await client!.Get(this.apiUrl, CancellationToken.None);
-
-            await sendingRequest.Should().ThrowAsync<FlurlHttpException>();
-            httpTest.ShouldHaveCalled(this.apiUrl).Times(3);
-        }
     }
 }
